@@ -96,12 +96,24 @@ def sd_callback(rec, frames, time, status):
     if debug_time:
         print(timeit.default_timer() - start)
     
+    # Choose the max score and check word_threshold
+    word_threshold = 5
+    perdict_index = np.argmax(val)
+    print ('perdict index:',perdict_index)
+    train_commands = ['on','stop','unknown','slience']
+    if train_commands[perdict_index] > word_threshold:
+    print ('dectect voice:',train_commands[perdict_index])
+    print('----------------------------------------------------------------------------')
+   
+    '''
+    # Choose the max score
     perdict_index = np.argmax(val)
     print ('perdict index:',perdict_index)
     train_commands = ['on','stop','unknown','slience']
     print ('dectect voice:',train_commands[perdict_index])
     print('----------------------------------------------------------------------------')
-
+    '''
+    
 # Start streaming from microphone
 with sounddevice.InputStream(channels=num_channels,
                     samplerate=sample_rate,
