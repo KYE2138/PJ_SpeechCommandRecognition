@@ -102,7 +102,9 @@ def sd_callback(rec, frames, time, status):
     print ('perdict index:',perdict_index)
     train_commands = ['on','stop','unknown','slience']
     if train_commands[perdict_index] > word_threshold:
-    print ('dectect voice:',train_commands[perdict_index])
+        print ('dectect voice:',train_commands[perdict_index])
+    else :
+        print ('dectect voice:',train_commands[-1])
     print('----------------------------------------------------------------------------')
    
     '''
