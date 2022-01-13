@@ -1,144 +1,111 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import sounddevice \n",
-    "import numpy as np\n",
-    "import scipy.signal\n",
-    "import timeit\n",
-    "import python_speech_features\n",
-    "\n",
-    "\n",
-    "from tflite_runtime.interpreter import Interpreter\n",
-    "\n",
-    "# Parameters\n",
-    "debug_time = 1\n",
-    "debug_acc = 1\n",
-    "led_pin = 8\n",
-    "word_threshold = 0.5\n",
-    "rec_duration = 0.5\n",
-    "window_stride = 0.5\n",
-    "sample_rate = 48000\n",
-    "resample_rate = 8000\n",
-    "num_channels = 1\n",
-    "num_mfcc = 16\n",
-    "model_path = 'SpeechCommandRecognition_model.tflite'\n",
-    "\n",
-    "# Sliding window\n",
-    "window = np.zeros(int(rec_duration * resample_rate) * 2)\n",
-    "\n",
-    "# Load model (interpreter)\n",
-    "interpreter = Interpreter(model_path)\n",
-    "interpreter.allocate_tensors()\n",
-    "input_details = interpreter.get_input_details()\n",
-    "output_details = interpreter.get_output_details()\n",
-    "print(input_details)\n",
-    "\n",
-    "# Decimate (filter and downsample)\n",
-    "def decimate(signal, old_fs, new_fs):\n",
-    "    \n",
-    "    # Check to make sure we're downsampling\n",
-    "    if new_fs > old_fs:\n",
-    "        print(\"Error: target sample rate higher than original\")\n",
-    "        return signal, old_fs\n",
-    "    \n",
-    "    # We can only downsample by an integer factor\n",
-    "    dec_factor = old_fs / new_fs\n",
-    "    if not dec_factor.is_integer():\n",
-    "        print(\"Error: can only decimate by integer factor\")\n",
-    "        return signal, old_fs\n",
-    "\n",
-    "    # Do decimation\n",
-    "    resampled_signal = scipy.signal.decimate(signal, int(dec_factor))\n",
-    "\n",
-    "    return resampled_signal, new_fs\n",
-    "\n",
-    "# This gets called every 0.5 seconds\n",
-    "def sd_callback(rec, frames, time, status):\n",
-    "\n",
-    "    # Start timing for testing\n",
-    "    start = timeit.default_timer()\n",
-    "    \n",
-    "    # Notify if errors\n",
-    "    if status:\n",
-    "        print('Error:', status)\n",
-    "    \n",
-    "    # Remove 2nd dimension from recording sample\n",
-    "    rec = np.squeeze(rec)\n",
-    "    \n",
-    "    # Resample\n",
-    "    rec, new_fs = decimate(rec, sample_rate, resample_rate)\n",
-    "    \n",
-    "    # Save recording onto sliding window\n",
-    "    window[:len(window)//2] = window[len(window)//2:]\n",
-    "    window[len(window)//2:] = rec\n",
-    "\n",
-    "    # Compute features\n",
-    "    mfccs = python_speech_features.base.mfcc(window, \n",
-    "                                        samplerate=new_fs,\n",
-    "                                        winlen=0.256,\n",
-    "                                        winstep=0.050,\n",
-    "                                        numcep=num_mfcc,\n",
-    "                                        nfilt=26,\n",
-    "                                        nfft=4096,\n",
-    "                                        preemph=0.0,\n",
-    "                                        ceplifter=0,\n",
-    "                                        appendEnergy=False,\n",
-    "                                        winfunc=np.hanning)\n",
-    "    mfccs = mfccs.transpose()\n",
-    "\n",
-    "    # Make prediction from model\n",
-    "    in_tensor = np.float32(mfccs.reshape(1, mfccs.shape[0], mfccs.shape[1], 1))\n",
-    "    interpreter.set_tensor(input_details[0]['index'], in_tensor)\n",
-    "    interpreter.invoke()\n",
-    "    output_data = interpreter.get_tensor(output_details[0]['index'])\n",
-    "    val = output_data[0]\n",
-    "\n",
-    "    if debug_acc:\n",
-    "        print(val)\n",
-    "        \n",
-    "    if debug_time:\n",
-    "        print(timeit.default_timer() - start)\n",
-    "    \n",
-    "    perdict_index = np.argmax(val)\n",
-    "    print ('perdict index:',perdict_index)\n",
-    "    train_commands = ['on','stop','unknown','slience']\n",
-    "    print ('dectect voice:',train_commands[perdict_index])\n",
-    "    print('----------------------------------------------------------------------------')\n",
-    "\n",
-    "# Start streaming from microphone\n",
-    "with sounddevice.InputStream(channels=num_channels,\n",
-    "                    samplerate=sample_rate,\n",
-    "                    blocksize=int(sample_rate * rec_duration),\n",
-    "                    callback=sd_callback):\n",
-    "    while True:\n",
-    "        pass"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.8.10"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 2
-}
+import sounddevice 
+import numpy as np
+import scipy.signal
+import timeit
+import python_speech_features
+
+
+from tflite_runtime.interpreter import Interpreter
+
+# Parameters
+debug_time = 1
+debug_acc = 1
+led_pin = 8
+word_threshold = 0.5
+rec_duration = 0.5
+window_stride = 0.5
+sample_rate = 48000
+resample_rate = 8000
+num_channels = 1
+num_mfcc = 16
+model_path = 'SpeechCommandRecognition_model.tflite'
+
+# Sliding window
+window = np.zeros(int(rec_duration * resample_rate) * 2)
+
+# Load model (interpreter)
+interpreter = Interpreter(model_path)
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+print(input_details)
+
+# Decimate (filter and downsample)
+def decimate(signal, old_fs, new_fs):
+    
+    # Check to make sure we're downsampling
+    if new_fs > old_fs:
+        print("Error: target sample rate higher than original")
+        return signal, old_fs
+    
+    # We can only downsample by an integer factor
+    dec_factor = old_fs / new_fs
+    if not dec_factor.is_integer():
+        print("Error: can only decimate by integer factor")
+        return signal, old_fs
+
+    # Do decimation
+    resampled_signal = scipy.signal.decimate(signal, int(dec_factor))
+
+    return resampled_signal, new_fs
+
+# This gets called every 0.5 seconds
+def sd_callback(rec, frames, time, status):
+
+    # Start timing for testing
+    start = timeit.default_timer()
+    
+    # Notify if errors
+    if status:
+        print('Error:', status)
+    
+    # Remove 2nd dimension from recording sample
+    rec = np.squeeze(rec)
+    
+    # Resample
+    rec, new_fs = decimate(rec, sample_rate, resample_rate)
+    
+    # Save recording onto sliding window
+    window[:len(window)//2] = window[len(window)//2:]
+    window[len(window)//2:] = rec
+
+    # Compute features
+    mfccs = python_speech_features.base.mfcc(window, 
+                                        samplerate=new_fs,
+                                        winlen=0.256,
+                                        winstep=0.050,
+                                        numcep=num_mfcc,
+                                        nfilt=26,
+                                        nfft=4096,
+                                        preemph=0.0,
+                                        ceplifter=0,
+                                        appendEnergy=False,
+                                        winfunc=np.hanning)
+    mfccs = mfccs.transpose()
+
+    # Make prediction from model
+    in_tensor = np.float32(mfccs.reshape(1, mfccs.shape[0], mfccs.shape[1], 1))
+    interpreter.set_tensor(input_details[0]['index'], in_tensor)
+    interpreter.invoke()
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    val = output_data[0]
+
+    if debug_acc:
+        print(val)
+        
+    if debug_time:
+        print(timeit.default_timer() - start)
+    
+    perdict_index = np.argmax(val)
+    print ('perdict index:',perdict_index)
+    train_commands = ['on','stop','unknown','slience']
+    print ('dectect voice:',train_commands[perdict_index])
+    print('----------------------------------------------------------------------------')
+
+# Start streaming from microphone
+with sounddevice.InputStream(channels=num_channels,
+                    samplerate=sample_rate,
+                    blocksize=int(sample_rate * rec_duration),
+                    callback=sd_callback):
+    while True:
+        pass
