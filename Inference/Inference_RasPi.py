@@ -114,7 +114,7 @@ def sd_callback(rec, frames, time, status):
         print(timeit.default_timer() - start)
     
     
-    #
+    # global parameters
     global dc
     global LED_PIN
     
