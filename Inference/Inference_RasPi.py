@@ -7,9 +7,6 @@ import python_speech_features
 import RPi.GPIO as GPIO
 import time
 
-
-
-
 from tflite_runtime.interpreter import Interpreter
 
 # Inference Parameters
