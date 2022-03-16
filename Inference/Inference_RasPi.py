@@ -112,7 +112,7 @@ def sd_callback(rec, frames, time, status):
     p.ChangeDutyCycle(dc)
     
     # Choose the max score and check word_threshold
-    word_threshold = 5
+    word_threshold = 2
     perdict_index = np.argmax(val)
     print ('perdict index:',perdict_index)
     train_commands = ['on','off','go','stop','unknown','slience']
