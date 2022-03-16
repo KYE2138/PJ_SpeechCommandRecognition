@@ -4,10 +4,15 @@ import scipy.signal
 import timeit
 import python_speech_features
 
+import RPi.GPIO as GPIO
+import time
+
+
+
 
 from tflite_runtime.interpreter import Interpreter
 
-# Parameters
+# Inference Parameters
 debug_time = 1
 debug_acc = 1
 led_pin = 8
@@ -107,6 +112,21 @@ def sd_callback(rec, frames, time, status):
         print ('dectect voice:',train_commands[-1])
     print('----------------------------------------------------------------------------')
    
+    # Control the GPIO
+    # Gpio parameters
+    LED_PIN = 16
+    FAN_PIN = 18
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(LED_PIN, GPIO.OUT)
+    if perdict_index = 0:
+        GPIO.output(LED_PIN, GPIO.HIGH)
+        print("on!")
+    elif perdict_index = 1:  
+        GPIO.output(LED_PIN, GPIO.LOW)
+        print("off!")
+
+    
+    
     '''
     # Choose the max score
     perdict_index = np.argmax(val)
