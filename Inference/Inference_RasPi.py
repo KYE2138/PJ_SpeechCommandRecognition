@@ -115,10 +115,10 @@ def sd_callback(rec, frames, time, status):
     FAN_PIN = 18
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(LED_PIN, GPIO.OUT)
-    if perdict_index = 0:
+    if perdict_index == 0:
         GPIO.output(LED_PIN, GPIO.HIGH)
         print("on!")
-    elif perdict_index = 1:  
+    elif perdict_index == 1:  
         GPIO.output(LED_PIN, GPIO.LOW)
         print("off!")
 
