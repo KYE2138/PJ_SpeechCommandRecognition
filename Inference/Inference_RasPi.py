@@ -116,7 +116,6 @@ def sd_callback(rec, frames, time, status):
     
     #
     global dc
-    global GPIO
     global LED_PIN
     
     # Choose the max score and check word_threshold
