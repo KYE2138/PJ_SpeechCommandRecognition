@@ -10,17 +10,17 @@ import time
 from tflite_runtime.interpreter import Interpreter
 
 # GPIO parameters
-    LED_PIN = 16
-    FAN_PIN = 18
-    GPIO.setmode(GPIO.BOARD)
-    # Led
-    GPIO.setup(LED_PIN, GPIO.OUT)
-    GPIO.output(LED_PIN, GPIO.LOW)
-    # Fan
-    GPIO.setup(FAN_PIN, GPIO.OUT)
-    p = GPIO.PWM(FAN_PIN, 25000)
-    p.start(0)
-    dc = 0
+LED_PIN = 16
+FAN_PIN = 18
+GPIO.setmode(GPIO.BOARD)
+# Led
+GPIO.setup(LED_PIN, GPIO.OUT)
+GPIO.output(LED_PIN, GPIO.LOW)
+# Fan
+GPIO.setup(FAN_PIN, GPIO.OUT)
+p = GPIO.PWM(FAN_PIN, 25000)
+p.start(0)
+dc = 0
  
 
 
