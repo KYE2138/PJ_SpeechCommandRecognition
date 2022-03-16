@@ -122,7 +122,7 @@ def sd_callback(rec, frames, time, status):
     word_threshold = 2
     perdict_index = np.argmax(val)
     print ('perdict index:',perdict_index)
-    train_commands = ['on','off','go','stop','unknown','slience']
+    train_commands = ['on','off','up','down','stop','unknown','slience']
     if val[perdict_index] > word_threshold:
         print ('dectect voice:',train_commands[perdict_index])
         # Control the GPIO
@@ -144,6 +144,10 @@ def sd_callback(rec, frames, time, status):
                 dc = 0
             p.ChangeDutyCycle(dc)
             print("speed down!, now speed:",dc)
+        elif perdict_index == 4:
+            dc = 0
+            p.ChangeDutyCycle(dc)
+            print("stop!, now speed:",dc)
     else :
         print ('dectect voice:',train_commands[-1])
     print('----------------------------------------------------------------------------')
