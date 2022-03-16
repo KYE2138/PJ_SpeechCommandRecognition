@@ -133,13 +133,13 @@ def sd_callback(rec, frames, time, status):
             GPIO.output(LED_PIN, GPIO.LOW)
             print("off!")
         elif perdict_index == 2:  
-            dc = dc + 25
+            dc = dc + 50
             if dc > 100:
                 dc = 100
             p.ChangeDutyCycle(dc)
             print("speed up!, now speed:",dc)
         elif perdict_index == 3:
-            dc = dc - 25
+            dc = dc - 50
             if dc < 0:
                 dc = 0
             p.ChangeDutyCycle(dc)
