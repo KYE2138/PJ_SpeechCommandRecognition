@@ -129,25 +129,21 @@ def sd_callback(rec, frames, time, status):
         if perdict_index == 0:
             GPIO.output(LED_PIN, GPIO.HIGH)
             print("on!")
-            time.sleep(3)
         elif perdict_index == 1:  
             GPIO.output(LED_PIN, GPIO.LOW)
             print("off!")
-            time.sleep(3)
         elif perdict_index == 2:  
             dc = dc + 25
             if dc > 100:
                 dc = 100
             p.ChangeDutyCycle(dc)
             print("speed up!, now speed:",dc)
-            time.sleep(3)
         elif perdict_index == 3:
             dc = dc - 25
             if dc < 0:
                 dc = 0
             p.ChangeDutyCycle(dc)
             print("speed down!, now speed:",dc)
-            time.sleep(3)
     else :
         print ('dectect voice:',train_commands[-1])
     print('----------------------------------------------------------------------------')
