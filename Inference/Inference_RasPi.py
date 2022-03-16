@@ -89,8 +89,8 @@ def sd_callback(rec, frames, time, status):
     # Compute features
     mfccs = python_speech_features.base.mfcc(window, 
                                         samplerate=new_fs,
-                                        winlen=0.256,
-                                        winstep=0.050,
+                                        winlen=0.016,
+                                        winstep=0.008,
                                         numcep=num_mfcc,
                                         nfilt=26,
                                         nfft=4096,
