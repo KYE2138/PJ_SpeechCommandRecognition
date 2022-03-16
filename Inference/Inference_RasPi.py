@@ -68,7 +68,7 @@ def decimate(signal, old_fs, new_fs):
 
 # This gets called every 0.5 seconds
 def sd_callback(rec, frames, time, status):
-
+    
     # Start timing for testing
     start = timeit.default_timer()
     
@@ -114,6 +114,10 @@ def sd_callback(rec, frames, time, status):
         print(timeit.default_timer() - start)
     
     
+    #
+    global dc
+    global GPIO
+    global LED_PIN
     
     # Choose the max score and check word_threshold
     word_threshold = 2
@@ -142,7 +146,7 @@ def sd_callback(rec, frames, time, status):
             dc = dc - 25
             if dc < 0:
                 dc = 0
-            GPIO.output(LED_PIN, GPIO.LOW)
+            p.ChangeDutyCycle(dc)
             print("speed down!, now speed:",dc)
             time.sleep(3)
     else :
