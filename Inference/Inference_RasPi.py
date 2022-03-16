@@ -119,7 +119,7 @@ def sd_callback(rec, frames, time, status):
     global LED_PIN
     
     # Choose the max score and check word_threshold
-    word_threshold = 2
+    word_threshold = 1
     perdict_index = np.argmax(val)
     print ('perdict index:',perdict_index)
     train_commands = ['on','off','up','down','unknown','slience']
