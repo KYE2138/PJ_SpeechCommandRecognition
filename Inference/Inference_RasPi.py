@@ -98,6 +98,19 @@ def sd_callback(rec, frames, time, status):
     if debug_time:
         print(timeit.default_timer() - start)
     
+    # GPIO parameters
+    LED_PIN = 16
+    FAN_PIN = 18
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(LED_PIN, GPIO.OUT)
+    GPIO.setup(FAN_PIN, GPIO.OUT)
+    p = GPIO.PWM(FAN_PIN, 25000)
+    p.start(0)
+    # init GPIO
+    GPIO.output(LED_PIN, GPIO.LOW)
+    dc = 0
+    p.ChangeDutyCycle(dc)
+    
     # Choose the max score and check word_threshold
     word_threshold = 5
     perdict_index = np.argmax(val)
@@ -105,22 +118,30 @@ def sd_callback(rec, frames, time, status):
     train_commands = ['on','off','go','stop','unknown','slience']
     if val[perdict_index] > word_threshold:
         print ('dectect voice:',train_commands[perdict_index])
+        # Control the GPIO
+        if perdict_index == 0:
+            GPIO.output(LED_PIN, GPIO.HIGH)
+            print("on!")
+        elif perdict_index == 1:  
+            GPIO.output(LED_PIN, GPIO.LOW)
+            print("off!")
+        elif perdict_index == 2:  
+            dc = dc + 25
+            if dc > 100:
+                dc = 100
+            p.ChangeDutyCycle(dc)
+            print("speed up!, now speed:",dc)
+        elif perdict_index == 3:
+            dc = dc - 25
+            if dc < 0:
+                dc = 0
+            GPIO.output(LED_PIN, GPIO.LOW)
+            print("speed down!, now speed:",dc)
     else :
         print ('dectect voice:',train_commands[-1])
     print('----------------------------------------------------------------------------')
    
-    # Control the GPIO
-    # Gpio parameters
-    LED_PIN = 16
-    FAN_PIN = 18
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(LED_PIN, GPIO.OUT)
-    if perdict_index == 0:
-        GPIO.output(LED_PIN, GPIO.HIGH)
-        print("on!")
-    elif perdict_index == 1:  
-        GPIO.output(LED_PIN, GPIO.LOW)
-        print("off!")
+
 
     
     
