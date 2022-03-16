@@ -9,6 +9,21 @@ import time
 
 from tflite_runtime.interpreter import Interpreter
 
+# GPIO parameters
+    LED_PIN = 16
+    FAN_PIN = 18
+    GPIO.setmode(GPIO.BOARD)
+    # Led
+    GPIO.setup(LED_PIN, GPIO.OUT)
+    GPIO.output(LED_PIN, GPIO.LOW)
+    # Fan
+    GPIO.setup(FAN_PIN, GPIO.OUT)
+    p = GPIO.PWM(FAN_PIN, 25000)
+    p.start(0)
+    dc = 0
+ 
+
+
 # Inference Parameters
 debug_time = 1
 debug_acc = 1
@@ -98,18 +113,7 @@ def sd_callback(rec, frames, time, status):
     if debug_time:
         print(timeit.default_timer() - start)
     
-    # GPIO parameters
-    LED_PIN = 16
-    FAN_PIN = 18
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(LED_PIN, GPIO.OUT)
-    GPIO.setup(FAN_PIN, GPIO.OUT)
-    p = GPIO.PWM(FAN_PIN, 25000)
-    p.start(0)
-    # init GPIO
-    GPIO.output(LED_PIN, GPIO.LOW)
-    dc = 0
-    p.ChangeDutyCycle(dc)
+    
     
     # Choose the max score and check word_threshold
     word_threshold = 2
@@ -122,21 +126,25 @@ def sd_callback(rec, frames, time, status):
         if perdict_index == 0:
             GPIO.output(LED_PIN, GPIO.HIGH)
             print("on!")
+            time.sleep(3)
         elif perdict_index == 1:  
             GPIO.output(LED_PIN, GPIO.LOW)
             print("off!")
+            time.sleep(3)
         elif perdict_index == 2:  
             dc = dc + 25
             if dc > 100:
                 dc = 100
             p.ChangeDutyCycle(dc)
             print("speed up!, now speed:",dc)
+            time.sleep(3)
         elif perdict_index == 3:
             dc = dc - 25
             if dc < 0:
                 dc = 0
             GPIO.output(LED_PIN, GPIO.LOW)
             print("speed down!, now speed:",dc)
+            time.sleep(3)
     else :
         print ('dectect voice:',train_commands[-1])
     print('----------------------------------------------------------------------------')
