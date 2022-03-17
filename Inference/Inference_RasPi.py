@@ -114,7 +114,7 @@ def sd_callback(rec, frames, time, status):
       print(val)
         
     if debug_time:
-        print('Latency:',timeit.default_timer() - start)
+        print('Latency:',around(timeit.default_timer(), 4) - start,' ms')
     
     
     # global parameters
@@ -125,7 +125,7 @@ def sd_callback(rec, frames, time, status):
     word_threshold = 1
     perdict_index = np.argmax(val)
     print ('perdict index:',perdict_index)
-    print (train_commands)
+    
     if val[perdict_index] > word_threshold:
         print ('dectect voice:',train_commands[perdict_index])
         # Control the GPIO
