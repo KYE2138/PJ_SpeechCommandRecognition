@@ -106,12 +106,15 @@ def sd_callback(rec, frames, time, status):
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])
     val = output_data[0]
-
+    
+    train_commands = ['on','off','up','down','unknown','slience']
+   
     if debug_acc:
-        print(val)
+      print(train_commands)
+      print(val)
         
     if debug_time:
-        print(timeit.default_timer() - start)
+        print('Latency:',timeit.default_timer() - start)
     
     
     # global parameters
@@ -122,7 +125,7 @@ def sd_callback(rec, frames, time, status):
     word_threshold = 1
     perdict_index = np.argmax(val)
     print ('perdict index:',perdict_index)
-    train_commands = ['on','off','up','down','unknown','slience']
+    print (train_commands)
     if val[perdict_index] > word_threshold:
         print ('dectect voice:',train_commands[perdict_index])
         # Control the GPIO
