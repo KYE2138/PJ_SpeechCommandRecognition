@@ -106,11 +106,13 @@ def sd_callback(rec, frames, time, status):
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])
     val = output_data[0]
+    val = list(np.around(np.array(val),2))
     
     train_commands = ['on','off','up','down','unknown','slience']
    
     if debug_acc:
       print(train_commands)
+      
       print(val)
         
     if debug_time:
