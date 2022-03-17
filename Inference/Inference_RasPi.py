@@ -127,7 +127,7 @@ def sd_callback(rec, frames, time, status):
     print ('perdict index:',perdict_index)
     
     if val[perdict_index] > word_threshold:
-        print ('dectect voice:',train_commands[perdict_index])
+        print ('dectect command:',train_commands[perdict_index])
         # Control the GPIO
         if perdict_index == 0:
             GPIO.output(LED_PIN, GPIO.HIGH)
