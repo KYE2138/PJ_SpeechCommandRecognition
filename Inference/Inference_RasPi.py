@@ -100,9 +100,6 @@ def sd_callback(rec, frames, time, status):
                                         winfunc=np.hanning)
     mfccs = mfccs.transpose()
     
-    # debug
-    print(mfccs.shape)
-    
     # Make prediction from model
     in_tensor = np.float32(mfccs.reshape(1, mfccs.shape[0], mfccs.shape[1], 1))
     interpreter.set_tensor(input_details[0]['index'], in_tensor)
@@ -114,6 +111,11 @@ def sd_callback(rec, frames, time, status):
     # debug
     print('mfccs.shape:', mfccs.shape)
     print('in_tensor.shape:', in_tensor.shape)
+    print('rec:', rec)
+    print('frames:', frames)
+    print('new_fs:', new_fs)
+    
+    
     
     train_commands = ['on','off','up','down','unknown','slience']
     if debug_acc:
