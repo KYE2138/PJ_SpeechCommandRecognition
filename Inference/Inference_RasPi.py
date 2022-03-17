@@ -114,7 +114,7 @@ def sd_callback(rec, frames, time, status):
       print(val)
         
     if debug_time:
-        print('Latency:',around(timeit.default_timer(), 4) - start,' ms')
+        print('Latency:', round(timeit.default_timer(), 4) - start,' ms')
     
     
     # global parameters
