@@ -3,6 +3,7 @@ import numpy as np
 import scipy.signal
 import timeit
 import python_speech_features
+import librosa
 
 import RPi.GPIO as GPIO
 import time
@@ -29,9 +30,10 @@ debug_time = 1
 debug_acc = 1
 led_pin = 8
 word_threshold = 0.5
+
 rec_duration = 0.5
-window_stride = 0.5
-sample_rate = 48000
+window_stride = 0.01
+microphone_sample_rate = 48000
 resample_rate = 16000
 num_channels = 1
 num_mfcc = 16
@@ -80,28 +82,32 @@ def sd_callback(rec, frames, time, status):
     rec = np.squeeze(rec)
     
     # Resample
-    rec, new_fs = decimate(rec, sample_rate, resample_rate)
+    rec, new_fs = decimate(rec, microphone_sample_rate, resample_rate)
     
     # Save recording onto sliding window
     window[:len(window)//2] = window[len(window)//2:]
     window[len(window)//2:] = rec
 
     # Compute features
-    mfccs = python_speech_features.base.mfcc(window, 
-                                        samplerate=new_fs,
-                                        winlen=0.256,
-                                        winstep=0.050,
-                                        numcep=num_mfcc,
-                                        nfilt=26,
-                                        nfft=4096,
-                                        preemph=0.0,
-                                        ceplifter=0,
-                                        appendEnergy=False,
-                                        winfunc=np.hanning)
-    mfccs = mfccs.transpose()
+    sr = 16000
+    n_mfcc = 64
+    n_mels = 64
+    n_fft = 512 
+    window_stride = 0.01
+    hop_length = int(sr*window_stride)
+    fmin = 0
+    fmax = None
+    
+    
+    mfcc_librosa = librosa.feature.mfcc(y=window, sr=sr, n_fft=n_fft,
+                                        n_mfcc=n_mfcc, n_mels=n_mels,
+                                        hop_length=hop_length,
+                                        fmin=fmin, fmax=fmax, htk=False)
+    
+    
     
     # Make prediction from model
-    in_tensor = np.float32(mfccs.reshape(1, mfccs.shape[0], mfccs.shape[1], 1))
+    in_tensor = np.float32(mfcc_librosa.reshape(1, mfccs.shape[0], mfccs.shape[1], 1))
     interpreter.set_tensor(input_details[0]['index'], in_tensor)
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])
@@ -109,7 +115,7 @@ def sd_callback(rec, frames, time, status):
     val = list(np.around(np.array(val),2))
     
     # debug
-    print('mfccs.shape:', mfccs.shape)
+    print('mfccs.shape:', mfcc_librosa.shape)
     print('in_tensor.shape:', in_tensor.shape)
     print('rec:', rec)
     print('frames:', frames)
@@ -179,8 +185,8 @@ def sd_callback(rec, frames, time, status):
     
 # Start streaming from microphone
 with sounddevice.InputStream(channels=num_channels,
-                    samplerate=sample_rate,
-                    blocksize=int(sample_rate * rec_duration),
+                    samplerate=microphone_sample_rate,
+                    blocksize=int(microphone_sample_rate * rec_duration),
                     callback=sd_callback):
     while True:
         pass
