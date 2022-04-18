@@ -106,7 +106,7 @@ def sd_callback(rec, frames, time, status):
     
     
     # Make prediction from model
-    in_tensor = np.float32(mfcc_librosa.reshape(1, mfccs.shape[0], mfccs.shape[1], 1))
+    in_tensor = np.float32(mfcc_librosa.reshape(1, mfcc_librosa.shape[0], mfcc_librosa.shape[1], 1))
     interpreter.set_tensor(input_details[0]['index'], in_tensor)
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])
