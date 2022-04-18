@@ -123,7 +123,7 @@ def sd_callback(rec, frames, time, status):
     
     
     
-    train_commands = ['on','unknown','slience']
+    train_commands = ["yes","no","up","down","left","right","on","off","stop","go","unknown","slience"]
     if debug_acc:
       print(train_commands)
       print(val)
