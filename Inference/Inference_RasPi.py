@@ -2,7 +2,6 @@ import sounddevice
 import numpy as np
 import scipy.signal
 import timeit
-import python_speech_features
 import librosa
 
 import RPi.GPIO as GPIO
