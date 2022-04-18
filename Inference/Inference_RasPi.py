@@ -92,7 +92,7 @@ def sd_callback(rec, frames, time, status):
     n_mfcc = 64
     n_mels = 64
     n_fft = 512 
-    window_stride = 0.01
+    window_stride = 0.5
     hop_length = int(sr*window_stride)
     fmin = 0
     fmax = None
