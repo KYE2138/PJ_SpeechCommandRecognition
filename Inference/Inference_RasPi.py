@@ -132,6 +132,18 @@ def sd_callback(rec, frames, time, status):
     if debug_time:
         print('Latency:', round(timeit.default_timer() - start , 4) ,' ms')
     
+
+    def softmax(x):
+    
+        f_x = np.exp(x) / np.sum(np.exp(x))
+        return f_x
+    # Choose the max score and check word_threshold
+    word_threshold = 1
+    perdict_softmax = softmax(val)
+    perdict_index = np.argmax(perdict_softmax)
+    print ('perdict index:', perdict_index)
+    print ('dectect command:',train_commands[perdict_index])
+    print('----------------------------------------------------------------------------')
     '''
     # global parameters
     global dc
