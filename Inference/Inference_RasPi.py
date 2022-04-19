@@ -8,7 +8,7 @@ import RPi.GPIO as GPIO
 import time
 
 from tflite_runtime.interpreter import Interpreter
-
+'''
 # GPIO parameters
 LED_PIN = 16
 FAN_PIN = 18
@@ -21,7 +21,7 @@ GPIO.setup(FAN_PIN, GPIO.OUT)
 p = GPIO.PWM(FAN_PIN, 25000)
 p.start(0)
 dc = 0
- 
+'''
 
 
 # Inference Parameters
@@ -130,7 +130,7 @@ def sd_callback(rec, frames, time, status):
     if debug_time:
         print('Latency:', round(timeit.default_timer() - start , 4) ,' ms')
     
-    
+    '''
     # global parameters
     global dc
     global LED_PIN
@@ -168,7 +168,7 @@ def sd_callback(rec, frames, time, status):
     else :
         print ('dectect voice:',train_commands[-1])
     print('----------------------------------------------------------------------------')
-   
+    '''
 
 
     
