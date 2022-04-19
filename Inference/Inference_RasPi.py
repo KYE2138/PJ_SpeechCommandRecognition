@@ -103,7 +103,7 @@ def sd_callback(rec, frames, time, status):
                                         hop_length=hop_length,
                                         fmin=fmin, fmax=fmax, htk=False)
     
-    
+    print (mfcc_librosa.shape)
     
     # Make prediction from model
     in_tensor = np.float32(mfcc_librosa.reshape(1, mfcc_librosa.shape[0], mfcc_librosa.shape[1], 1))
