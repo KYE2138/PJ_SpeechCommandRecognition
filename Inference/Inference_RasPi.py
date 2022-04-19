@@ -140,6 +140,7 @@ def sd_callback(rec, frames, time, status):
     # Choose the max score and check word_threshold
     word_threshold = 1
     perdict_softmax = softmax(val)
+    print ('perdict softmax:', perdict_softmax)
     perdict_index = np.argmax(perdict_softmax)
     print ('perdict index:', perdict_index)
     print ('dectect command:',train_commands[perdict_index])
