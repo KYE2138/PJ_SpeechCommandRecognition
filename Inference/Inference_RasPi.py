@@ -87,6 +87,8 @@ def sd_callback(rec, frames, time, status):
     window[:len(window)//2] = window[len(window)//2:]
     window[len(window)//2:] = rec
 
+    print (window.shape)
+
     # Compute features
     sr = 16000
     n_mfcc = 64
